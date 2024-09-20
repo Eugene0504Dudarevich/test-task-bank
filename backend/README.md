@@ -29,7 +29,7 @@ If the installation was successful, you should be able to run the following comm
 
 ## Install
 
-    $ git clone https://github.com/Eugene0504Dudarevich/test-task-millennium.git
+    $ git clone https://github.com/Eugene0504Dudarevich/test-task-bank.git
     $ cd backend
     $ npm i
 

@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Install
 
-    $ git clone https://github.com/Eugene0504Dudarevich/test-task-millennium.git
+    $ git clone https://github.com/Eugene0504Dudarevich/test-task-bank.git
     $ cd frontend
     $ npm i
 

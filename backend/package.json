@@ -1,0 +1,16 @@
+{
+  "name": "test-task-millennium-backend",
+  "version": "1.0.0",
+  "description": "This is a back-end part of test-task-millennium app",
+  "main": "server.js",
+  "scripts": {
+    "server": "node server.js"
+  },
+  "author": "Yauheni Dudarevich",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "fs": "^0.0.1-security"
+  }
+}

@@ -17,14 +17,15 @@ type SidebarProps = {
   transactions: Transaction[];
 };
 
-export const Sidebar: FC<SidebarProps> = props => {
+export const Sidebar: FC<SidebarProps> = ({ transactions }) => {
   const currentBalance = useMemo(() => {
     let balance = 0;
-    props.transactions.map((transaction: Transaction) => {
+    transactions.map((transaction: Transaction) => {
       balance += transaction.amount;
+      return transaction;
     });
     return balance;
-  }, [props.transactions]);
+  }, [transactions]);
 
   return (
     <Container>

@@ -9,12 +9,11 @@ import {
 } from '@mui/material';
 
 const Container = styled(Box)(({ theme }) => ({
-  position: 'fixed',
+  position: 'sticky',
   bottom: 0,
-  width: 'calc(100% - 4rem)',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
-  padding: '0 2rem'
+  padding: '0 2rem',
 }));
 const StyledList = styled(List)(() => ({
   display: 'flex',

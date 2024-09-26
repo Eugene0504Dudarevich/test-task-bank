@@ -32,7 +32,7 @@ const AddButton = styled(Button)(() => ({
 
 type FormData = {
   amount: number;
-  accountNumber: string;
+  accountNumber: number;
   address: string;
   description: string;
 };
@@ -42,16 +42,21 @@ const validationSchema = yup.object({
     .typeError("Value of 'Amount' field must be a number")
     .min(0, "Value of 'Amount' field  must be positive")
     .required(),
-  accountNumber: yup.string().required("'AccountNumber' field is required"),
+  accountNumber: yup.number()
+    .typeError("'Account Number' field must contain only digits")
+    .test('length', "'Account Number' field must have 26 digits",
+        value => value?.toLocaleString('fullwide', { useGrouping: false }).length === 26
+    )
+    .required("'AccountNumber' field is required"),
   address: yup.string().required("'Address' field is required"),
   description: yup.string().required("'Description' field is required"),
 });
 
-type CreateFormProps = {
+type CreateTransactionFormProps = {
   createTransaction: (newTransaction: Transaction) => void;
 };
 
-export const CreateForm: FC<CreateFormProps> = props => {
+export const CreateTransactionForm: FC<CreateTransactionFormProps> = ({ createTransaction }) => {
   const {
     reset,
     register,
@@ -66,12 +71,12 @@ export const CreateForm: FC<CreateFormProps> = props => {
       id: uuid(),
       amount: data.amount,
       beneficiary: '',
-      account: data.accountNumber,
+      account: `PL${data.accountNumber.toLocaleString('fullwide', { useGrouping: false })}`,
       address: data.address,
-      date: new Date().toDateString(),
+      date: new Date().toISOString(),
       description: data.description,
     };
-    props.createTransaction(newTransaction);
+    createTransaction(newTransaction);
     reset();
   };
 

@@ -5,7 +5,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 
 export const NavBar: FC = () => {
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <IconButton
           size="large"

@@ -1,23 +1,23 @@
-import { FC } from 'react';
+import { ChangeEvent, FC, useState, useMemo } from 'react';
 import {
-  Button,
+  IconButton,
   styled,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
+  Tooltip,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Transaction from '../types/transaction';
+import moment from "moment";
 
 const StyledTableContainer = styled(TableContainer)(() => ({
   border: '1px solid black',
-  margin: '0 2rem',
-  marginBottom: '5rem',
-}));
-const DeleteButton = styled(Button)(() => ({
-  textTransform: 'unset',
+  margin: '0 2rem 2rem 2rem',
 }));
 
 type Column = {
@@ -28,10 +28,17 @@ type Column = {
 type TransactionTableProps = {
   transactions: Transaction[];
   loading: boolean;
-  deleteTransaction: (id: string | number) => void;
+  openDeleteTransactionDialog: (id: number | string) => void;
 }
 
-export const TransactionTable: FC<TransactionTableProps> = props => {
+export const TransactionTable: FC<TransactionTableProps> = ({
+  transactions,
+  loading,
+  openDeleteTransactionDialog,
+}) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+
   const columns: readonly Column[] = [
     { id: 'amount', label: 'Amount' },
     { id: 'beneficiary', label: 'Beneficiary' },
@@ -43,13 +50,29 @@ export const TransactionTable: FC<TransactionTableProps> = props => {
   ];
 
   const onDelete = (id: string | number) => {
-    props.deleteTransaction(id);
+    openDeleteTransactionDialog(id);
+    setPage(0);
   };
+
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const visibleTransactions = useMemo(() =>
+    [...transactions]
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [transactions, page, rowsPerPage],
+  );
 
   return (
     <>
-      {props.loading && <div>Loading...</div>}
-      {!!props.transactions.length && (
+      {loading && !transactions.length && <div>Loading...</div>}
+      {!!transactions.length && !loading && (
         <StyledTableContainer>
           <Table aria-label="transactions-table">
             <TableHead>
@@ -62,21 +85,29 @@ export const TransactionTable: FC<TransactionTableProps> = props => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.transactions.map((transaction: Transaction) => (
+              {visibleTransactions.map((transaction: Transaction) => (
                 <TableRow key={transaction.id}>
                   {columns.map((column: Column) => {
                     if (column.id === 'actions') {
                       return (
                         <TableCell key="actions">
-                          <DeleteButton
-                            variant="contained"
-                            onClick={() => onDelete(transaction.id)}
-                          >
-                            Delete
-                          </DeleteButton>
+                          <Tooltip title="Delete transaction">
+                            <IconButton
+                              onClick={() => onDelete(transaction.id)}
+                            >
+                              <DeleteIcon/>
+                            </IconButton>
+                          </Tooltip>
                         </TableCell>
                       );
-                    } else {
+                    } else if (column.id === 'date') {
+                      return (
+                        <TableCell key={column.id}>
+                          {moment(transaction[column.id]).format('DD/MM/YYYY hh:mm')}
+                        </TableCell>
+                      );
+                    }
+                    else {
                       const value = transaction[column.id];
                       return (
                         <TableCell key={column.id}>
@@ -89,6 +120,16 @@ export const TransactionTable: FC<TransactionTableProps> = props => {
               ))}
             </TableBody>
           </Table>
+          <TablePagination
+            component="div"
+            rowsPerPageOptions={[20, 40]}
+            count={transactions.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{ mr: 2 }}
+          />
         </StyledTableContainer>
       )}
     </>

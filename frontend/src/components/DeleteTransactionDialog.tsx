@@ -26,20 +26,29 @@ type DeleteDialogProps = {
   deleteTransaction: (id: number | string) => void;
 };
 
-export const DeleteTransactionDialog: FC<DeleteDialogProps> = props => {
+export const DeleteTransactionDialog: FC<DeleteDialogProps> = ({
+  transactionId,
+  open,
+  setOpen,
+  deleteTransaction,
+}) => {
+  const onClose = () => {
+    setOpen(false);
+  };
+
   const onConfirm = () => {
-    if (props.transactionId || props.transactionId === 0) {
-      props.deleteTransaction(props.transactionId);
+    if (transactionId || transactionId === 0) {
+      deleteTransaction(transactionId);
     }
-    props.setOpen(false);
+    onClose();
   };
 
   const onCancel = () => {
-    props.setOpen(false);
+    onClose();
   };
 
   return (
-    <Dialog open={props.open}>
+    <Dialog open={open}>
       <DialogTitle>
         Delete confirmation
       </DialogTitle>

@@ -25,7 +25,7 @@ export const Sidebar: FC<SidebarProps> = ({ transactions }) => {
       return transaction;
     });
     return balance;
-  }, [transactions]);
+  }, [transactions.length]);
 
   return (
     <Container>
